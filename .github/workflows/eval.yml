@@ -78,6 +78,8 @@ jobs:
         run: venv/bin/python autohook_test.py
       - name: "Unit tests: auto memory alignment"
         run: venv/bin/python memory_test.py
+      - name: "Unit tests: MCP handshake"
+        run: venv/bin/python mcp_server_test.py
       - name: "Unit tests: capture and handoffs"
         run: venv/bin/python capture_test.py
       - name: "Unit tests: client purge"
