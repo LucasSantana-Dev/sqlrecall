@@ -1,0 +1,10 @@
+{
+  "name": "sqlrecall",
+  "version": "1.2.0",
+  "description": "Local agent memory and code recall: auto-recall on every prompt, reindex on write, session capture and cross-agent handoffs, and the sqlrecall MCP server. Needs `pipx install sqlrecall`.",
+  "author": { "name": "Lucas Santana" },
+  "homepage": "https://github.com/LucasSantana-Dev/sqlrecall",
+  "repository": "https://github.com/LucasSantana-Dev/sqlrecall",
+  "license": "MIT",
+  "keywords": ["memory", "rag", "recall", "mcp", "sqlite", "handoff"]
+}

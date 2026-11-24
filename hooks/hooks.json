@@ -1,0 +1,20 @@
+{
+  "hooks": {
+    "SessionStart": [{ "hooks": [
+      { "type": "command", "command": "sqlrecall-hook --agent claude-code --event session-start" },
+      { "type": "command", "command": "sqlrecall-autohook drift" },
+      { "type": "command", "command": "sqlrecall-autohook report" }
+    ] }],
+    "UserPromptSubmit": [{ "hooks": [
+      { "type": "command", "command": "sqlrecall-hook --agent claude-code --event user-prompt" },
+      { "type": "command", "command": "sqlrecall-autohook recall" }
+    ] }],
+    "PostToolUse": [
+      { "matcher": "*", "hooks": [{ "type": "command", "command": "sqlrecall-hook --agent claude-code --event post-tool" }] },
+      { "matcher": "Write|Edit", "hooks": [{ "type": "command", "command": "sqlrecall-autohook reindex" }] }
+    ],
+    "Stop": [{ "hooks": [{ "type": "command", "command": "sqlrecall-hook --agent claude-code --event stop" }] }],
+    "PreCompact": [{ "hooks": [{ "type": "command", "command": "sqlrecall-hook --agent claude-code --event pre-compact" }] }],
+    "SessionEnd": [{ "hooks": [{ "type": "command", "command": "sqlrecall-hook --agent claude-code --event session-end" }] }]
+  }
+}

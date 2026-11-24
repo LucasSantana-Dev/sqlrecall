@@ -81,7 +81,28 @@ venv/bin/sqlrecall-query "how do we handle retry timeouts"
 
 </details>
 
+## Claude Code plugin
+
+One install wires the MCP server, auto-recall, reindex on write, and session
+capture with handoffs. The plugin calls the `sqlrecall-*` commands, so install
+the package first:
+
+```bash
+pipx install sqlrecall
+```
+
+```
+/plugin install sqlrecall --marketplace LucasSantana-Dev/sqlrecall
+```
+
+On Claude Code older than 2.1.275, add the marketplace first with
+`/plugin marketplace add LucasSantana-Dev/sqlrecall`, then
+`/plugin install sqlrecall@sqlrecall`. `SQLRECALL_CAPTURE=off` and
+`CLAUDE_RAG_AUTORECALL=off` turn the capture and recall parts off.
+
 ## MCP server (agent integration)
+
+Without the plugin, register the server yourself:
 
 ```jsonc
 // e.g. Claude Code: .mcp.json or ~/.claude.json

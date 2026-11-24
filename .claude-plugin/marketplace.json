@@ -1,0 +1,14 @@
+{
+  "name": "sqlrecall",
+  "description": "sqlrecall: local agent memory and code recall for Claude Code.",
+  "owner": {
+    "name": "Lucas Santana"
+  },
+  "plugins": [
+    {
+      "name": "sqlrecall",
+      "source": "./",
+      "description": "Local agent memory and code recall in one SQLite file, wired into Claude Code."
+    }
+  ]
+}
