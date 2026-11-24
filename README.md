@@ -162,6 +162,27 @@ OpenCode). `SQLRECALL_CAPTURE=off` disables capture;
 Incremental reindex (`indexer.py --incremental <files>`) keeps writes cheap;
 `session_chunker.py` can additionally index agent session transcripts.
 
+### With Claude Code's auto memory
+
+Claude Code already writes durable notes as one-fact markdown files with a
+`MEMORY.md` index. Let it keep writing them, and let sqlrecall search them
+across every project:
+
+1. Point auto memory at one vault for all projects, in `~/.claude/settings.json`:
+   `"autoMemoryDirectory": "~/notes/memory"`. This replaces per-project
+   symlinks from `~/.claude/projects/<project>/memory`, which sync tools tend
+   to break.
+2. Index that vault as memory in `sources.yaml`:
+   `- {type: memory, glob: ~/notes/memory/**/*.md}`.
+3. Wire `sqlrecall-autohook reindex` (above) so notes Claude writes are
+   searchable right away.
+
+Freshness for memory notes comes from the frontmatter `modified` stamp that
+auto memory writes, falling back to the file mtime, so a note copied or synced
+from another machine keeps its age. The weekly report flags a `MEMORY.md` over
+Claude Code's load limit (200 lines or 25KB), since entries past it are
+dropped at session start.
+
 ## Evaluation
 
 The eval harness is the part most RAG setups skip. `eval/run.py` scores

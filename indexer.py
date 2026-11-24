@@ -19,6 +19,7 @@ import re
 import sqlite3
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 
 import numpy as np
@@ -337,6 +338,25 @@ def classify_repo(path: Path) -> str | None:
     return None
 
 
+_MODIFIED_RE = re.compile(r"^\s*modified:\s*['\"]?([0-9][0-9T:.+\-]*Z?)['\"]?\s*$", re.M)
+
+
+def note_time(path: Path, text: str) -> float:
+    """Freshness for a note: the frontmatter `modified` stamp Claude Code's auto
+    memory writes, else the file mtime. Copies and syncs (rsync, cp, a second
+    machine) reset mtime; the stamp travels with the note."""
+    fm = text.lstrip("\ufeff")
+    if fm.startswith("---"):
+        end = fm.find("\n---", 3)
+        m = _MODIFIED_RE.search(fm[: end if end > 0 else 0])
+        if m:
+            try:
+                return datetime.fromisoformat(m.group(1).replace("Z", "+00:00")).timestamp()
+            except ValueError:
+                pass
+    return path.stat().st_mtime
+
+
 def classify_type(path: Path) -> str:
     s = path.as_posix()
     if "/memory/" in s:
@@ -635,7 +655,7 @@ def index_files(
             if re.search(r"^valid_to:\s*\S", text, re.M):
                 continue
         sha = file_sha(path)
-        mtime = path.stat().st_mtime
+        mtime = note_time(path, text) if stype_hint == "memory" else path.stat().st_mtime
         stype = stype_hint if stype_hint != "code" else "code"
         repo = classify_repo(path)
         language = detect_language(path)
