@@ -27,6 +27,15 @@ from case_quality import case_scope  # single source of truth for expect_scope n
 
 DATASET = ROOT / "eval" / "dataset.jsonl"
 
+
+def display_path(path: str) -> str:
+    """Path relative to this checkout when inside it, so committed result JSONs
+    hold no machine-specific absolute paths."""
+    try:
+        return Path(path).resolve().relative_to(ROOT).as_posix()
+    except (ValueError, OSError):
+        return path
+
 # Iter 4 levers (memory-first plan, code de-artifact) — EVAL-ONLY, behind flags; they do
 # NOT touch live retrieval. They test BENCHMARK.md's two never-cleanly-measured claims:
 #  - RAG_EVAL_CWD_SCOPE: scope code queries to the expected repo (mirrors the live `recall`
@@ -102,7 +111,7 @@ def run(cases: list[dict], top: int, rerank: bool = False) -> dict:
                 "expect": expect,
                 "scope": scope_key,
                 "hit_rank": hit_rank,
-                "top_hit": f"{results[0]['path']}:{results[0]['start_line']}" if results else None,
+                "top_hit": f"{display_path(results[0]['path'])}:{results[0]['start_line']}" if results else None,
             }
         )
 

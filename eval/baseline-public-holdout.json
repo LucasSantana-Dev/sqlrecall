@@ -19,70 +19,70 @@
       "expect": "chunkers.py",
       "scope": "code",
       "hit_rank": 1,
-      "top_hit": "/Volumes/External HD/Desenvolvimento/shelfmark/chunkers.py:103"
+      "top_hit": "chunkers.py:103"
     },
     {
       "query": "detect programming language from file extension",
       "expect": "chunkers.py",
       "scope": "code",
       "hit_rank": 1,
-      "top_hit": "/Volumes/External HD/Desenvolvimento/shelfmark/chunkers.py:126"
+      "top_hit": "chunkers.py:126"
     },
     {
       "query": "typescript regex symbol extraction exports classes interfaces",
       "expect": "symbols.py",
       "scope": "code",
       "hit_rank": 1,
-      "top_hit": "/Volumes/External HD/Desenvolvimento/shelfmark/symbols.py:169"
+      "top_hit": "symbols.py:169"
     },
     {
       "query": "populate call graph tables from indexed chunks",
       "expect": "populate_symbols.py",
       "scope": "code",
       "hit_rank": null,
-      "top_hit": "/Volumes/External HD/Desenvolvimento/shelfmark/eval/sweep.py:166"
+      "top_hit": "eval/sweep.py:166"
     },
     {
       "query": "index agent session transcripts from jsonl files",
       "expect": "session_chunker.py",
       "scope": "code",
       "hit_rank": 3,
-      "top_hit": "/Volumes/External HD/Desenvolvimento/shelfmark/purge_test.py:139"
+      "top_hit": "purge_test.py:139"
     },
     {
       "query": "compute mean reciprocal rank and hit at k metrics",
       "expect": "eval/run.py",
       "scope": "code",
       "hit_rank": 3,
-      "top_hit": "/Volumes/External HD/Desenvolvimento/shelfmark/eval/sweep.py:75"
+      "top_hit": "eval/sweep.py:75"
     },
     {
       "query": "inject top retrieval hits into the agent prompt automatically",
       "expect": "autorecall-hook.sh",
       "scope": "code",
       "hit_rank": 1,
-      "top_hit": "/Volumes/External HD/Desenvolvimento/shelfmark/examples/claude-code/autorecall-hook.sh:1"
+      "top_hit": "examples/claude-code/autorecall-hook.sh:1"
     },
     {
       "query": "python ast walk collecting function definitions and calls",
       "expect": "symbols.py",
       "scope": "code",
       "hit_rank": 1,
-      "top_hit": "/Volumes/External HD/Desenvolvimento/shelfmark/symbols.py:16"
+      "top_hit": "symbols.py:16"
     },
     {
       "query": "exclude symbol lookup questions from retrieval scoring",
       "expect": "eval/run.py",
       "scope": "code",
       "hit_rank": 1,
-      "top_hit": "/Volumes/External HD/Desenvolvimento/shelfmark/eval/run.py:71"
+      "top_hit": "eval/run.py:71"
     },
     {
       "query": "reindex a file incrementally right after it is written",
       "expect": "reindex-hook.sh",
       "scope": "code",
       "hit_rank": 2,
-      "top_hit": "/Volumes/External HD/Desenvolvimento/shelfmark/examples/claude-code/sessionstart-drift-reindex.sh:49"
+      "top_hit": "examples/claude-code/sessionstart-drift-reindex.sh:49"
     }
   ],
   "excluded_symbol_lookup": 0

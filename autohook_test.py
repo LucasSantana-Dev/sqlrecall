@@ -91,16 +91,16 @@ def test_reindex_only_tracked_files():
 
 
 def test_windows_paths_match_forward_slash_globs():
-    pattern = "C:/Users/luk/notes/**/*.md"
-    assert autohook._glob_match(r"C:\Users\Luk\notes\memory\a.md", pattern) == (sys.platform in ("darwin", "win32"))
-    assert autohook._glob_match(r"C:\Users\luk\notes\memory\a.md", pattern)
-    assert not autohook._glob_match(r"C:\Users\luk\other\a.md", pattern)
+    pattern = "C:/Users/dev/notes/**/*.md"
+    assert autohook._glob_match(r"C:\Users\Dev\notes\memory\a.md", pattern) == (sys.platform in ("darwin", "win32"))
+    assert autohook._glob_match(r"C:\Users\dev\notes\memory\a.md", pattern)
+    assert not autohook._glob_match(r"C:\Users\dev\other\a.md", pattern)
 
 
 def test_classify_type_on_windows_paths():
-    win = PureWindowsPath(r"C:\Users\luk\notes\memory\feedback_x.md")
+    win = PureWindowsPath(r"C:\Users\dev\notes\memory\feedback_x.md")
     assert indexer.classify_type(win) == "memory"
-    skill = PureWindowsPath(r"C:\Users\luk\.claude\skills\recall\SKILL.md")
+    skill = PureWindowsPath(r"C:\Users\dev\.claude\skills\recall\SKILL.md")
     assert indexer.classify_type(skill) == "skills"
 
 
