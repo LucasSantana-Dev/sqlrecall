@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for the cross-platform agent hooks (autohook.py).
+"""Tests for the cross-platform agent hooks (sqlrecall_autohook.py).
 
 No model download and no real background work: retrieval.search and
 autohook._spawn are replaced, so what is under test is the hook decisions
@@ -32,7 +32,7 @@ NOTES = TMP / "notes"
     """))
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import autohook  # noqa: E402
+import sqlrecall_autohook as autohook  # noqa: E402
 import indexer  # noqa: E402
 
 SPAWNED: list[list[str]] = []

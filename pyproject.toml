@@ -41,7 +41,7 @@ sqlrecall-query = "query:main"
 sqlrecall-mcp = "mcp_server:main"
 sqlrecall-purge = "purge:main"
 sqlrecall-hook = "capture:main"
-sqlrecall-autohook = "autohook:main"
+sqlrecall-autohook = "sqlrecall_autohook:main"
 # Pre-rename command names, kept so existing MCP configs and hooks keep working.
 shelfmark-build = "indexer:main"
 shelfmark-query = "query:main"
@@ -51,7 +51,7 @@ shelfmark-purge = "purge:main"
 [tool.setuptools]
 py-modules = [
     "indexer",
-    "autohook",
+    "sqlrecall_autohook",
     "capture",
     "chunkers",
     "config",
