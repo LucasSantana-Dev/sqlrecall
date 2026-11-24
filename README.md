@@ -104,10 +104,15 @@ Two tools:
   (memory/standards/plans/handoffs/adrs; configurable via
   `RAG_KNOWLEDGE_SCOPE`). Never reranked, by measurement.
 
-`examples/claude-code/` has the full loop: auto-recall on every prompt
-(UserPromptSubmit), incremental reindex on file writes (PostToolUse), drift
-reindex + weekly report at session start, and a nightly rebuild with an eval
-regression gate.
+`examples/claude-code/recall-hooks.json` wires the full loop with one
+command, `sqlrecall-autohook`, that runs the same on macOS, Linux and Windows:
+auto-recall on every prompt (`recall`, UserPromptSubmit), incremental reindex
+when the agent writes a file that matches `sources.yaml` (`reindex`,
+PostToolUse), and drift reindex plus the weekly report at session start
+(`drift`, `report`). Model loads and reindexing run in a detached background
+process, so the agent never waits on them. The `.sh` files next to it are
+thin bash wrappers for setups that already point at them, and
+`rag-nightly-rebuild.sh` adds a nightly rebuild with an eval regression gate.
 
 ## Session capture and handoffs
 

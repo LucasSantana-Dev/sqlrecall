@@ -74,6 +74,8 @@ jobs:
         run: venv/bin/python diff_pack_test.py
       - name: "Unit tests: client layer isolation"
         run: venv/bin/python layers_test.py
+      - name: "Unit tests: cross-platform agent hooks"
+        run: venv/bin/python autohook_test.py
       - name: "Unit tests: capture and handoffs"
         run: venv/bin/python capture_test.py
       - name: "Unit tests: client purge"

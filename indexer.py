@@ -70,7 +70,7 @@ def _is_card_path(path) -> bool:
     return any(pat in n for pat in CARD_ONLY_PATH_PATTERNS)
 
 from config import CLIENTS, CURATED_REPOS, DB, MODEL_NAME, ROOT, WORKSTATION_CODE_GLOBS
-from config import all_dbs, client_db, client_for_path, purged_client_for_path
+from config import _within, all_dbs, client_db, client_for_path, purged_client_for_path
 from config import SOURCES as _CONFIG_SOURCES
 
 HOME = Path.home()
@@ -217,7 +217,7 @@ def iter_md_sources() -> list[tuple[str, Path]]:
                     results.append((stype, p))
     # Quarantine tier (memory security gate, 2026-07-28): notes under any
     # quarantine/ dir are never indexed until promoted out. See memory-trust.sh.
-    return [(s, p) for s, p in results if "/quarantine/" not in str(p)]
+    return [(s, p) for s, p in results if "/quarantine/" not in p.as_posix()]
 
 
 GIT_LOG_DAYS = 180
@@ -338,7 +338,7 @@ def classify_repo(path: Path) -> str | None:
 
 
 def classify_type(path: Path) -> str:
-    s = str(path)
+    s = path.as_posix()
     if "/memory/" in s:
         return "memory"
     if "/plans/" in s:
@@ -612,7 +612,7 @@ def index_files(
     for stype_hint, path in files:
         if stype_hint == "code":
             _repo = next(
-                (r for r in CURATED_REPOS if str(path).startswith(str(r) + "/")), None
+                (r for r in CURATED_REPOS if _within(path, r)), None
             )
             if _repo is not None and has_graph(_repo):
                 continue  # graphed repo: code chunks excluded (incremental path too)
@@ -744,7 +744,7 @@ def main() -> int:
             purge.append(str(p))
             if not p.exists():
                 continue
-            if "/quarantine/" in str(p):
+            if "/quarantine/" in p.as_posix():
                 # Quarantine tier: purge any stale chunks but never index.
                 continue
             stype = classify_type(p)

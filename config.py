@@ -89,7 +89,9 @@ clients: {}
 
 
 def _expand(p: str) -> str:
-    return os.path.expanduser(os.path.expandvars(str(p)))
+    out = os.path.expanduser(os.path.expandvars(str(p)))
+    # Globs are split on "/" downstream; pathlib accepts "/" on Windows too.
+    return out.replace("\\", "/") if sys.platform == "win32" else out
 
 
 def _load_sources_file() -> dict:
