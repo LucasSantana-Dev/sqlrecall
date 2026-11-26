@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """MCP stdio server exposing rag_query over the hybrid BM25+cosine index.
 
-JSON-RPC 2.0. Supports: initialize, tools/list, tools/call (rag_query,
+JSON-RPC 2.0. Supports: initialize, ping, tools/list, tools/call (rag_query,
 search_knowledge, handoff_begin, handoff_list, handoff_accept).
 """
 from __future__ import annotations
@@ -139,6 +139,30 @@ HANDOFF_ACCEPT_SCHEMA = {
     },
 }
 
+READ_ONLY = {"readOnlyHint": True, "openWorldHint": False}
+WRITES = {"readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": False}
+for _schema, _hints in ((TOOL_SCHEMA, READ_ONLY), (SEARCH_KNOWLEDGE_SCHEMA, READ_ONLY),
+                        (HANDOFF_LIST_SCHEMA, READ_ONLY), (HANDOFF_BEGIN_SCHEMA, WRITES),
+                        (HANDOFF_ACCEPT_SCHEMA, WRITES)):
+    _schema["annotations"] = _hints
+
+# Newest first. initialize answers with the client's version when supported,
+# else the newest one here, as the MCP lifecycle spec asks.
+PROTOCOL_VERSIONS = ("2025-11-25", "2025-06-18", "2025-03-26", "2024-11-05")
+
+
+def negotiate_version(requested: object) -> str:
+    return requested if requested in PROTOCOL_VERSIONS else PROTOCOL_VERSIONS[0]
+
+
+def server_version() -> str:
+    try:
+        from importlib.metadata import version
+        return version("sqlrecall")
+    except Exception:  # noqa: BLE001 - running from a checkout without install
+        return "0+local"
+
+
 # Set from initialize's clientInfo; names who wrote or claimed a handoff.
 _CLIENT_NAME = "mcp"
 
@@ -248,13 +272,15 @@ def main() -> int:
             _respond(
                 msg_id,
                 result={
-                    "protocolVersion": "2024-11-05",
+                    "protocolVersion": negotiate_version(params.get("protocolVersion")),
                     "capabilities": {"tools": {}},
-                    "serverInfo": {"name": "sqlrecall", "version": "0.1.0"},
+                    "serverInfo": {"name": "sqlrecall", "version": server_version()},
                 },
             )
         elif method == "notifications/initialized":
             continue
+        elif method == "ping":
+            _respond(msg_id, result={})
         elif method == "tools/list":
             _respond(msg_id, result={"tools": [
                 TOOL_SCHEMA, SEARCH_KNOWLEDGE_SCHEMA,

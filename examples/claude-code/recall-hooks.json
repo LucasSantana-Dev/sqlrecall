@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "SessionStart": [{ "hooks": [
+      { "type": "command", "command": "sqlrecall-autohook drift" },
+      { "type": "command", "command": "sqlrecall-autohook report" }
+    ] }],
+    "UserPromptSubmit": [{ "hooks": [{ "type": "command", "command": "sqlrecall-autohook recall" }] }],
+    "PostToolUse": [{ "matcher": "Write|Edit", "hooks": [{ "type": "command", "command": "sqlrecall-autohook reindex" }] }]
+  }
+}

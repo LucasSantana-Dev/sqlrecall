@@ -11,13 +11,17 @@ import sqlite3
 import time
 from pathlib import Path
 
-from config import QLOG, ROOT
+from config import QLOG, ROOT, SOURCES
 DB = ROOT / "index.sqlite"
 OUT = ROOT / "weekly.md"
 
 WINDOW_DAYS = 7
 ZERO_HIT_THRESHOLD = 0.25
 SINCE = time.time() - WINDOW_DAYS * 86400
+# Claude Code loads the first 200 lines or 25KB of an auto memory MEMORY.md,
+# whichever comes first; everything past that is dropped at session start.
+MEMORY_INDEX_MAX_LINES = 200
+MEMORY_INDEX_MAX_BYTES = 25 * 1024
 
 
 def section(title: str, body: str) -> str:
@@ -48,6 +52,24 @@ def freq_queries() -> list[tuple]:
     ).fetchall()
     conn.close()
     return rows
+
+
+def oversized_memory_indexes() -> list[tuple[Path, int, int]]:
+    """MEMORY.md files at the root of a memory source that Claude Code would cut."""
+    out: list[tuple[Path, int, int]] = []
+    seen: set[Path] = set()
+    for stype, glob in SOURCES:
+        if stype != "memory":
+            continue
+        index = Path(glob.split("*", 1)[0]) / "MEMORY.md"
+        if index in seen or not index.is_file():
+            continue
+        seen.add(index)
+        data = index.read_bytes()
+        lines = data.count(b"\n") + (1 if data and not data.endswith(b"\n") else 0)
+        if lines > MEMORY_INDEX_MAX_LINES or len(data) > MEMORY_INDEX_MAX_BYTES:
+            out.append((index, lines, len(data)))
+    return out
 
 
 def file_sha(path: Path) -> str:
@@ -153,6 +175,16 @@ def main() -> int:
         )
     else:
         parts.append(section("Stale chunks", "_none_"))
+
+    for index, lines, size in oversized_memory_indexes():
+        parts.append(
+            section(
+                "MEMORY.md over Claude Code's load limit",
+                f"- {index}: {lines} lines, {size / 1024:.1f}KB "
+                f"(limit {MEMORY_INDEX_MAX_LINES} lines / {MEMORY_INDEX_MAX_BYTES // 1024}KB). "
+                "Entries past the limit are not loaded at session start; merge or drop stale lines.",
+            )
+        )
 
     OUT.write_text("\n".join(parts))
     print(f"wrote {OUT}")
